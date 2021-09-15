@@ -1,8 +1,23 @@
 #include <Arduino.h>
-#include "../include/manejoMotor.h"
+#include "manejoMotor.h"
 
+manejoMotor:: manejoMotor()
+{
+  IN1=8;   //si no se le setea los pines, se le da valores ya propios de la librería.
+  IN2=9;
+  IN3=10;
+  IN4=11;
+}
 
-void manejoMotor:: una_bobina(int IN1,int IN2,int IN3,int IN4,float numDeVueltas)
+manejoMotor::manejoMotor(int A, int B, int C,int D)
+{
+  IN1=A;
+  IN2=B;
+  IN3=C;
+  IN4=D;  
+}
+
+void manejoMotor:: una_bobina(float numDeVueltas)
 {
   int paso [4][4] =		// matriz  con la secuencia de pasos.
   {
@@ -15,7 +30,7 @@ void manejoMotor:: una_bobina(int IN1,int IN2,int IN3,int IN4,float numDeVueltas
   float numDePasos=numDeVueltas*512;  //2048 pasos=1 vuelta, dividido 4 bobinas son 512 pasos  por vuelta.
 
   if (numDeVueltas<0)       // si el num de vueltas es negativo  convertimos la variable num de pasos en positivo ya que esta la usamos para el for
-  {                         // que controla las vueltas que tiene que dar el motor, por ende no nos importa el signo
+  {                         // que controla las vueltas que tiene que dar el motor, por ende no nos importa el signo.
     numDePasos=numDePasos*-1;
   }
   
@@ -46,7 +61,7 @@ void manejoMotor:: una_bobina(int IN1,int IN2,int IN3,int IN4,float numDeVueltas
   }
 }
 
-void manejoMotor::dos_bobinas(int IN1, int IN2, int IN3,int IN4,float numDeVueltas)
+void manejoMotor::dos_bobinas(float numDeVueltas)
 {
   int paso [4][4] =		// matriz  con la secuencia de pasos
   {
@@ -90,7 +105,7 @@ void manejoMotor::dos_bobinas(int IN1, int IN2, int IN3,int IN4,float numDeVuelt
   }
 }
 
-void manejoMotor::medio_paso(int IN1, int IN2, int IN3,int IN4,float numDeVueltas)
+void manejoMotor::medio_paso(float numDeVueltas)
 
 {
       
@@ -106,7 +121,7 @@ void manejoMotor::medio_paso(int IN1, int IN2, int IN3,int IN4,float numDeVuelta
   {1, 0, 0, 1}
 };
 
-float numDePasos=numDeVueltas*512; //2048 pasos=1 vuelta, dividido 4 bobinas son 512 pasos  por vuelta
+float numDePasos=numDeVueltas*512; //4096 pasos=1 vuelta, dividido 8 bobinas son 512 pasos  por vuelta
 
    if (numDeVueltas<0)      
   {                         
@@ -140,7 +155,7 @@ float numDePasos=numDeVueltas*512; //2048 pasos=1 vuelta, dividido 4 bobinas son
   }
 }
 
-void manejoMotor::limpieza(int IN1, int IN2, int IN3,int IN4)
+void manejoMotor::limpieza()
 {
     digitalWrite(IN1, LOW);	
     digitalWrite(IN2, LOW);

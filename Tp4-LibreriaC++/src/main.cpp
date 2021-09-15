@@ -1,12 +1,12 @@
 #include <Arduino.h>
-#include "manejoMotor.h"
+#include "../lib/ControlMotorPP/manejoMotor.h"
 
 #define A  8		      	// IN1 de modulo controlador.
 #define B  9		      	// IN2 de modulo controlador.
 #define C  10		      	// IN3 de modulo controlador.
 #define D  11		       	// IN4 de modulo controlador.
 #define PulGiro 2       //Pulsador que cambia el giro del motor.
-#define PulModo 3       //Pulsador que cambia el modo de giro del motor.
+#define PulModo 3       //Pulsador que cambia el modo del motor.
 
 float Vueltas=0.01;     //Vueltas que dará el motor, le ponemos valores chicos para que no quede por mucho tiempo dentro del for de la libreria.
 int valorAnteriorG=0;    //Valor para pulsador giro.
@@ -15,7 +15,7 @@ int modo=0;             // Variable que almacenara 0 al 2 para entrar al case.
 unsigned long T0=0;     //Variable que almacena millis, usado en PulGiro.
 unsigned long T1=0;     //Variable que almacena millis, usado en PulModo.
 
-manejoMotor motor1;   //definimos la clase como motor1
+manejoMotor motor1(A,B,C,D);   //definimos la clase como motor1 y le pasamos al constructor los pines de salida 
 void cambioGiro();    //Funcion que usaremos en la interrupcion cuando queramos cambiar el giro.
 void cambioModo();    //Funcion que usaremos en la interrupcion cuando queramos cambiar el modo.
 
@@ -31,7 +31,7 @@ void setup() {
   attachInterrupt(digitalPinToInterrupt(2),cambioGiro,FALLING); //definimno la interrupcion giro
   attachInterrupt(digitalPinToInterrupt(3),cambioModo,FALLING);  //definimno la interrupcion modo
 
-  Serial.begin(9600);
+  Serial.begin(9600); //inicializamos puerto serial
 }
 
 void loop() 
@@ -39,15 +39,15 @@ void loop()
   switch (modo)
     {
     case 0:
-    motor1.una_bobina(A,B,C,D,Vueltas);
+    motor1.una_bobina(Vueltas);
     break;
 
     case 1:
-    motor1.dos_bobinas(A,B,C,D,Vueltas);
+    motor1.dos_bobinas(Vueltas);
     break;
 
     case 2:
-    motor1.medio_paso(A,B,C,D,Vueltas);
+    motor1.medio_paso(Vueltas);
     break;
   } 
 }
@@ -58,11 +58,11 @@ void cambioGiro()
 
   if ((valorPul == HIGH) && (valorAnteriorG == LOW))
   {
-    if(millis()>(T0+300))      //INTENTO DE ANTIRREBOTE
+    if(millis()>(T0+300))      //ANTIRREBOTE
     {
       Vueltas=Vueltas*-1;        //cambiamos el giro del motor.
-      Serial.println("CAMBIO GIRO");
       T0=millis();
+      Serial.println("CAMBIO GIRO");
     }
   }
     valorAnteriorG=valorPul;
@@ -74,7 +74,7 @@ void cambioModo()
     
   if ((valorPul == HIGH) && (valorAnteriorM == LOW))
   {
-    if(millis()>(T1+300))      //INTENTO DE ANTIRREBOTE
+    if(millis()>(T1+300))      //ANTIRREBOTE
     {
       if(modo<2)      
       {
@@ -84,8 +84,9 @@ void cambioModo()
       {
         modo=0;
       }
-      Serial.println(modo);
       T1=millis();
+      Serial.print("CAMBIO MODO NUM: ");
+      Serial.println(modo);
     }
   }
     valorAnteriorM=valorPul;
