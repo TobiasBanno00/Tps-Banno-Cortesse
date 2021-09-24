@@ -1,3 +1,12 @@
+/* -Crear una librería para el control de un motor paso a paso unipolar. 
+La librería debe contener una clase con métodos que permitan el uso de los 3 modos de funcionamiento (una bobina, dos bobinas y medio paso) y el giro en ambos sentidos.
+
+- Para probar la librería se debe crear un programa principal que produzca el giro del motor PAP en ambos sentidos.
+
+-Mediante un pulsador se debe generar una interrupción que cambie el sentido de giro.
+
+-Mediante otro pulsador se debe generar una interrupción que cambie el modo de funcionamiento (Una bobina, Dos bobinas, medio paso) */
+
 #include <Arduino.h>
 #include "../lib/ControlMotorPP/manejoMotor.h"
 
